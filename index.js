@@ -62,6 +62,42 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  let error = ''
+
+  if (body.name === undefined) {
+
+    error = 'name field missing'
+  }
+
+  else if (body.name.length === 0) {
+    error = 'no name provided'
+  }
+
+  else if (persons.some((person => {
+    return person.name === body.name
+  })))
+  {
+    error = 'name must be unique'
+  }
+
+  if (body.number === undefined) {
+      error = error.length > 0 ?
+      error.concat(', number field missing') :
+      error = 'number field missing'
+  }
+
+  else if (body.number.length === 0)
+    error = error.length > 0 ?
+      error.concat(', no phone number provided') :
+      error = 'no phone number provided'
+
+  if (error.length > 0)
+    {
+      return response.status(400).json({error: {error}})
+    }
+
+
+
   const person = {
     name: body.name,
     number: body.number,
