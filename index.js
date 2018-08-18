@@ -4,6 +4,10 @@ const bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
 
+const morgan = require('morgan')
+
+app.use(morgan('tiny'))
+
 let persons = [
   {
     name: 'Arto Hellas',
