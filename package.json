@@ -1,0 +1,27 @@
+{
+  "name": "plbackend",
+  "version": "0.0.1",
+  "description": "My answers to the exercises of the part three of the Full Stack Open course",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helihyv/full_stack_osa_3.git"
+  },
+  "author": "Heli Hyvättinen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/helihyv/full_stack_osa_3/issues"
+  },
+  "homepage": "https://github.com/helihyv/full_stack_osa_3#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  }
+}
