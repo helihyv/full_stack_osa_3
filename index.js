@@ -1,3 +1,5 @@
+const Person = require('./models/person.js')
+
 const express = require('express')
 const app = express()
 
@@ -47,8 +49,20 @@ let persons = [
   }
 ]
 
+const formatPerson = (person) => {
+  return {
+    name: person.name,
+    number: person.number,
+    id: person._id
+  }
+}
+
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person
+    .find({})
+    .then(persons => {
+      response.json(persons.map(formatPerson))
+    })
 })
 
 app.get('/info', (request, response) => {
