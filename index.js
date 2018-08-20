@@ -131,6 +131,58 @@ app.post('/api/persons', (request, response) => {
     })
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const body = request.body
+
+  let error = ''
+
+  if (body.name === undefined) {
+
+    error = 'name field missing'
+  }
+
+  else if (body.name.length === 0) {
+    error = 'no name provided'
+  }
+
+  if (body.number === undefined) {
+      error = error.length > 0 ?
+      error.concat(', number field missing') :
+      error = 'number field missing'
+  }
+
+  else if (body.number.length === 0)
+    error = error.length > 0 ?
+      error.concat(', no phone number provided') :
+      error = 'no phone number provided'
+
+  if (error.length > 0)
+    {
+      return response.status(400).json({error: {error}})
+    }
+
+  const person =
+  {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(request.params.id, person, { new: true } )
+      .then(updatedPerson => {
+        if (updatedPerson) {
+          response.json(Person.formatPerson(updatedPerson))
+        } else {
+            response.status(404).end()
+          }
+      })
+      .catch(error => {
+        console.log(error)
+        response.status(400).send({error: 'malformatted id' })
+      })
+})
+
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
