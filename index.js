@@ -26,29 +26,6 @@ app
     ':method :url :body :status :res[content-length] - :response-time ms'
   ))
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: 1
-  },
-  {
-    name: 'Martti Tienari',
-    number: '040-123456',
-    id: 2
-  },
-  {
-    name: 'Arto Järvinen',
-    number: '040-123456',
-    id: 3
-  },
-  {
-    name: 'Lea Kutvonen',
-    number: '040-123456',
-    id: 4
-  }
-]
-
 app.get('/api/persons', (request, response) => {
   Person
     .find({})
@@ -59,20 +36,36 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/info', (request, response) => {
   const date = new Date()
-  response.send(`<p>puhelinluettelossa ${persons.length} henkilön tiedot</p>
-    <p>${date}</p>`)
+  Person.estimatedDocumentCount()
+    .then(n => {
+      console.log(n)
+      response.send(`<p>puhelinluettelossa ${n} henkilön tiedot</p>
+          <p>${date}</p>`)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+
+
+
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if ( person ) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
-})
+  Person
+     .findById(request.params.id)
+     .then(person => {
+       if (person) {
+         response.json(Person.formatPerson(person))
+       } else {
+         response.status(404).end()
+       }
+     })
+     .catch(error => {
+       console.log(error)
+       response.status(400).send({ error: 'malformatted id'})
+     })
+ })
 
 app.delete('/api/persons/:id',(request,response) => {
   Person
@@ -81,6 +74,7 @@ app.delete('/api/persons/:id',(request,response) => {
       response.status(204).end()
     })
     .catch(error => {
+      console.log(error)
       response.status(400).send({error: 'malformatted id'})
     })
 })
