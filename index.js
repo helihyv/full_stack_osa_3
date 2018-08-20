@@ -49,19 +49,11 @@ let persons = [
   }
 ]
 
-const formatPerson = (person) => {
-  return {
-    name: person.name,
-    number: person.number,
-    id: person._id
-  }
-}
-
 app.get('/api/persons', (request, response) => {
   Person
     .find({})
     .then(persons => {
-      response.json(persons.map(formatPerson))
+      response.json(persons.map(Person.formatPerson))
     })
 })
 
