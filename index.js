@@ -106,58 +106,58 @@ app.post('/api/persons', (request, response) => {
 
   if (error.length > 0)
     {
-      return response.status(400).json({error: {error}})
+      return response.status(400).json({error: error})
     }
 
 
-  const person = new Person ({
-    name: body.name,
-    number: body.number
-  })
+  Person
+    .find({ name: body.name})
+    .then(persons => {
+      if (persons.length > 0) //samanniminen löytyi
+      {
+        return response.status(400).json({error: 'name must be unique'})
+      }
 
-  person
-    .save()
-    .then(savedPerson => {
-      response.json(Person.formatPerson(savedPerson))
+      //Uusi henkilö
+
+      const personToAdd = new Person ({
+        name: body.name,
+        number: body.number
+      })
+
+      personToAdd
+      .save()
+      .then(savedPerson => {
+        response.json(Person.formatPerson(savedPerson))
+      })
+      .catch(error => {
+        console.log(error)
+      })
     })
-    .catch(error => {
-      console.log(error)
-    })
-})
+    .catch(error => {console.log(error)})
+  })
 
 app.put('/api/persons/:id', (request, response) => {
   const body = request.body
 
+//Sallitaan vain puhelinnumeron muuttaminen, muut kentät hylätään hiljaisesti
+
   let error = ''
 
-  if (body.name === undefined) {
-
-    error = 'name field missing'
-  }
-
-  else if (body.name.length === 0) {
-    error = 'no name provided'
-  }
-
   if (body.number === undefined) {
-      error = error.length > 0 ?
-      error.concat(', number field missing') :
       error = 'number field missing'
   }
 
   else if (body.number.length === 0)
-    error = error.length > 0 ?
-      error.concat(', no phone number provided') :
       error = 'no phone number provided'
 
   if (error.length > 0)
     {
-      return response.status(400).json({error: {error}})
+      return response.status(400).json({error: error})
     }
 
   const person =
   {
-    name: body.name,
     number: body.number
   }
 
