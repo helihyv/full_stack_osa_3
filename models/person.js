@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
-const url = 'mongodb://fstack:SENSUROITU@ds125402.mlab.com:25402/fsopl'
+if ( process.env.NODE_ENV !== 'production' ) {
+  require('dotenv').config()
+}
+
+const url = process.env.MONGODB_URI
+
 mongoose.connect(url,{ useNewUrlParser: true })
 .catch(error => {
   console.log(error)
